@@ -1,0 +1,60 @@
+{% extends 'base.html.twig' %}
+
+{% block javascripts %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+    <script src="{{ asset('js/main.js') }}"></script>
+{% endblock %}
+
+{% block body %}
+    {% if setupRequired %}
+
+        <h2>Setup</h2>
+        <ol>
+            <li>
+                <p>Create database if doesn't exist</p>
+                <pre>php ./bin/console doctrine:database:create</pre>
+            </li>
+            <li>
+                <p>Migrate database</p>
+                <pre>php ./bin/console doctrine:migrations:migrate</pre>
+            </li>
+            <li>
+                <p>Import postcodes into the database (Warning: it can take several hours!)</p>
+                <pre>php ./bin/console app:import</pre>
+            </li>
+            <li>
+                <a href="/">Reload the page</a>
+            </li>
+        </ol>
+
+    {% else %}
+
+        <form action="" id="search-form">
+            <div>
+                <label>Search by:</label>
+                <input type="radio" name="search_by" id="search_by_string" value="string" checked/>
+                <label for="search_by_string">string match</label>
+                <input type="radio" name="search_by" id="search_by_location" value="location"/>
+                <label for="search_by_location">location</label>
+            </div>
+            <div class="fieldset" id="fieldset-search_by_string" data-url="{{ path('api_postcode_lookup_by_string') }}">
+                <label for="search">String:</label>
+                <input type="text" name="search" id="search"/>
+            </div>
+            <div class="fieldset" id="fieldset-search_by_location" data-url="{{ path('api_postcode_lookup_by_location') }}" style="display: none">
+                <label for="latitude">Latitude</label>
+                <input type="text" name="latitude" id="latitude" value="50.7228"/>
+                <label for="longitude">Longitude</label>
+                <input type="text" name="longitude" id="longitude" value="-1.9041"/>
+                <label for="distance">Distance (miles)</label>
+                <input type="text" name="distance" id="distance" value="10"/>
+            </div>
+            <div>
+                <button type="submit">submit</button>
+                <button type="reset">clear</button>
+            </div>
+        </form>
+        <div id="results"></div>
+
+    {% endif %}
+{% endblock %}
