@@ -1,31 +1,32 @@
-version: '3'
+version: '3.4'
+
 services:
   php:
     build: .
     ports:
-    - 8000:8000
+      - 8000:8000
     volumes:
-    - .:/app
+      - .:/app
     environment:
       APACHE_DOCUMENT_ROOT: /app/public
     working_dir: /app
     depends_on:
-    - db
+      - db
 
   db:
     image: mysql:5
-#    restart: always
-#    volumes:
-#    - .docker/var/db:/var/lib/mysql
+    restart: always
+    volumes:
+      - .docker/var/db:/var/lib/mysql
     environment:
       MYSQL_RANDOM_ROOT_PASSWORD: 'yes'
       MYSQL_DATABASE: db
       MYSQL_USER: app
       MYSQL_PASSWORD: app
 
-#  phpmyadmin:
-#    image: phpmyadmin/phpmyadmin
-#    ports:
-#    - 8081:80
-#    links:
-#    - db
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    ports:
+      - 8081:80
+    links:
+      - db
